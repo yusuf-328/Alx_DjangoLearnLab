@@ -1,7 +1,7 @@
 # retrieve.md
 
 ```python
-books = Book.objects.all()
+books = Book.objects.get()
 books
 
 # Output
