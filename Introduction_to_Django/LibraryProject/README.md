@@ -1,0 +1,1 @@
+This is the initial django setup for Alx Introduction to django.

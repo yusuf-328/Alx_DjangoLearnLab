@@ -1,1 +1,0 @@
-This is the initial Django project setup for the ALX learning lab.
