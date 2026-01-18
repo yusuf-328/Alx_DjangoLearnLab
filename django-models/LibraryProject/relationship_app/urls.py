@@ -1,0 +1,7 @@
+from django.urls import path
+from . import views
+
+urlpatterns = [
+    path('', views.list_books, name='book_list'),                # <-- THIS MAKES /relationship/ WORK
+    path('library/<int:pk>/', views.LibraryDetailView.as_view(), name='library_detail'),
+]
