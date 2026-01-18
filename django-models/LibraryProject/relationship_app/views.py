@@ -3,6 +3,8 @@ from django.contrib.auth.forms import UserCreationForm
 from .models import Book, Library
 from django.views.generic import DetailView
 from django.contrib.auth.decorators import user_passes_test
+from django.contrib.auth.decorators import permission_required
+from django.shortcuts import get_object_or_404
 
 
 def list_books(request):
@@ -53,3 +55,40 @@ def librarian_view(request):
 @user_passes_test(is_member)
 def member_view(request):
     return render(request, "relationship_app/member_view.html")
+
+
+
+@permission_required("relationship_app.can_add_book", raise_exception=True)
+def add_book(request):
+    if request.method == "POST":
+        title = request.POST.get("title")
+        author_id = request.POST.get("author")
+        author = get_object_or_404(Author, id=author_id)
+
+        Book.objects.create(title=title, author=author)
+        return redirect("list_books")
+
+    authors = Author.objects.all()
+    return render(request, "relationship_app/add_book.html", {"authors": authors})
+
+
+@permission_required("relationship_app.can_change_book", raise_exception=True)
+def edit_book(request, pk):
+    book = get_object_or_404(Book, id=pk)
+
+    if request.method == "POST":
+        book.title = request.POST.get("title")
+        author_id = request.POST.get("author")
+        book.author = get_object_or_404(Author, id=author_id)
+        book.save()
+        return redirect("list_books")
+
+    authors = Author.objects.all()
+    return render(request, "relationship_app/edit_book.html", {"book": book, "authors": authors})
+
+
+@permission_required("relationship_app.can_delete_book", raise_exception=True)
+def delete_book(request, pk):
+    book = get_object_or_404(Book, id=pk)
+    book.delete()
+    return redirect("list_books")
