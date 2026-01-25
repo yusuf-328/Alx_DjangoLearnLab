@@ -96,11 +96,18 @@ X_FRAME_OPTIONS = "DENY"            # Prevent clickjacking
 
 CSRF_COOKIE_SECURE = True           # Only send CSRF cookie over HTTPS
 SESSION_COOKIE_SECURE = True        # Only send session cookie over HTTPS
-SECURE_SSL_REDIRECT = True          # Force HTTPS
+
+SECURE_SSL_REDIRECT = True          # Force HTTPS (redirect HTTP -> HTTPS)
+
+# HSTS settings
+SECURE_HSTS_SECONDS = 31536000             # Enforce HTTPS for 1 year
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True      # Apply HSTS to all subdomains
+SECURE_HSTS_PRELOAD = True                 # Allow domain to be preloaded in browsers
+
 
 CSRF_TRUSTED_ORIGINS = [
-    "http://localhost",
-    "http://127.0.0.1",
+    "https://localhost",
+    "https://127.0.0.1",
 ]
 
 
