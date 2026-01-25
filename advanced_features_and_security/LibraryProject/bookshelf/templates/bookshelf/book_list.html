@@ -5,9 +5,18 @@
 </head>
 <body>
     <h1>Bookshelf</h1>
+
+    <!-- CREATE BUTTON -->
+    <a href="{% url 'book_create' %}">Create Book</a>
+
     <ul>
         {% for book in books %}
-            <li>{{ book.title }} by {{ book.author }} ({{ book.publication_year }})</li>
+            <li>
+                {{ book.title }} by {{ book.author }} ({{ book.publication_year }})
+                <!-- EDIT & DELETE -->
+                <a href="{% url 'book_edit' book.pk %}">Edit</a>
+                <a href="{% url 'book_delete' book.pk %}">Delete</a>
+            </li>
         {% empty %}
             <li>No books available.</li>
         {% endfor %}
