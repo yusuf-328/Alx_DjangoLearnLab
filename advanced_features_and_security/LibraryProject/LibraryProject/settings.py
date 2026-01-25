@@ -122,3 +122,5 @@ CONTENT_SECURITY_POLICY = {
         "style-src": ("'self'",),
     }
 }
+
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
