@@ -5,7 +5,7 @@ from django.contrib.auth.forms import AuthenticationForm
 from .forms import CustomUserCreationForm
 from django.db.models import Q
 from django.views.generic import ListView
-from .models import Post
+from .models import Post, Tag
 
 # Registration view
 def register_view(request):
@@ -153,11 +153,14 @@ class PostSearchView(ListView):
             ).distinct()
         return Post.objects.none()
     
-class PostsByTagListView(ListView):
+
+
+# List posts by tag
+class PostByTagListView(ListView):
     model = Post
-    template_name = "blog/posts_by_tag.html"
-    context_object_name = "posts"
+    template_name = "blog/post_list.html"  
+    context_object_name = 'posts'
 
     def get_queryset(self):
-        tag_name = self.kwargs.get('tag_name')
-        return Post.objects.filter(tags__name=tag_name)
+        tag_slug = self.kwargs.get('tag_slug')
+        return Post.objects.filter(tags__name__iexact=tag_slug).order_by('-created_at')
