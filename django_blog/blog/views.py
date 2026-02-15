@@ -94,3 +94,42 @@ class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     def test_func(self):
         post = self.get_object()
         return self.request.user == post.author
+    from django.views.generic import CreateView, UpdateView, DeleteView
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from .models import Comment
+from .forms import CommentForm
+from django.shortcuts import get_object_or_404
+
+# Create comment (authenticated users only)
+class CommentCreateView(LoginRequiredMixin, CreateView):
+    model = Comment
+    form_class = CommentForm
+    template_name = "blog/comment_form.html"
+
+    def form_valid(self, form):
+        post_id = self.kwargs.get('post_id')
+        form.instance.post = get_object_or_404(Post, id=post_id)
+        form.instance.author = self.request.user
+        return super().form_valid(form)
+
+# Update comment (author only)
+class CommentUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    model = Comment
+    form_class = CommentForm
+    template_name = "blog/comment_form.html"
+
+    def test_func(self):
+        comment = self.get_object()
+        return self.request.user == comment.author
+
+# Delete comment (author only)
+class CommentDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    model = Comment
+    template_name = "blog/comment_confirm_delete.html"
+
+    def get_success_url(self):
+        return self.object.post.get_absolute_url()  # Redirect to the post detail
+
+    def test_func(self):
+        comment = self.get_object()
+        return self.request.user == comment.author
