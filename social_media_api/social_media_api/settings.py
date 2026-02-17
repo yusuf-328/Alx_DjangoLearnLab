@@ -86,13 +86,18 @@ WSGI_APPLICATION = 'social_media_api.wsgi.application'
 import dj_database_url
 import os
 
-DATABASES = {
-    'default': dj_database_url.config(
-        default='sqlite:///' + str(BASE_DIR / 'db.sqlite3'),
-        conn_max_age=600
-    )
-}
+# In social_media_api/settings.py
 
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',  # or 'django.db.backends.mysql' if using MySQL
+        'NAME': 'your_db_name',
+        'USER': 'your_db_user',
+        'PASSWORD': 'your_db_password',
+        'HOST': 'localhost',   # or your DB host
+        'PORT': '5432',        # Add this line! PostgreSQL default port is 5432
+    }
+}
 AUTH_USER_MODEL = 'accounts.CustomUser'
 
 # Password validation
