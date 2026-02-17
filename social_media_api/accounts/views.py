@@ -55,13 +55,21 @@ class ProfileView(generics.RetrieveAPIView):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def follow_user(request, user_id):
-    user_to_follow = get_object_or_404(CustomUser, id=user_id)
-    request.user.following.add(user_to_follow)
-    return Response({"detail": f"You are now following {user_to_follow.username}."})
+    try:
+        target_user = CustomUser.objects.get(id=user_id)
+    except CustomUser.DoesNotExist:
+        return Response({"error": "User not found"}, status=404)
+
+    request.user.following.add(target_user)
+    return Response({"success": f"You are now following {target_user.username}"})
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def unfollow_user(request, user_id):
-    user_to_unfollow = get_object_or_404(CustomUser, id=user_id)
-    request.user.following.remove(user_to_unfollow)
-    return Response({"detail": f"You have unfollowed {user_to_unfollow.username}."})
+    try:
+        target_user = CustomUser.objects.get(id=user_id)
+    except CustomUser.DoesNotExist:
+        return Response({"error": "User not found"}, status=404)
+
+    request.user.following.remove(target_user)
+    return Response({"success": f"You have unfollowed {target_user.username}"})
