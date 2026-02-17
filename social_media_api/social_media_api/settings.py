@@ -135,3 +135,21 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = 'static/'
+
+# Base directory
+import os
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+# ... other settings like DATABASES, INSTALLED_APPS, MIDDLEWARE, etc.
+
+# Static files (CSS, JavaScript, Images)
+STATIC_URL = '/static/'
+
+# Collect all static files here in production
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+# Media files (user uploads)
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+# ... any remaining settings like DEFAULT_AUTO_FIELD
