@@ -7,6 +7,9 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from .models import Post, Like
 from notifications.models import Notification
+from rest_framework import generics, permissions
+from .models import Post, Like
+from notifications.models import Notification
 
 
 class PostViewSet(viewsets.ModelViewSet):
@@ -45,14 +48,14 @@ def feed_view(request):
 
 
 @api_view(['POST'])
-@permission_classes([IsAuthenticated])
+@permission_classes([permissions.IsAuthenticated])
 def like_post(request, pk):
-    post = Post.objects.get(pk=pk)
+    post = generics.get_object_or_404(Post, pk=pk)
+
     like, created = Like.objects.get_or_create(user=request.user, post=post)
     if not created:
         return Response({'detail': 'You have already liked this post.'}, status=400)
 
-    # Create notification
     if post.author != request.user:
         Notification.objects.create(
             recipient=post.author,
@@ -61,15 +64,17 @@ def like_post(request, pk):
             target=post
         )
 
-    return Response({'success': f'You liked "{post.title}"'})
+    return Response({'success': 'Post liked successfully.'})
 
 
 @api_view(['POST'])
-@permission_classes([IsAuthenticated])
+@permission_classes([permissions.IsAuthenticated])
 def unlike_post(request, pk):
-    post = Post.objects.get(pk=pk)
+    post = generics.get_object_or_404(Post, pk=pk)
+
     like = Like.objects.filter(user=request.user, post=post).first()
     if like:
         like.delete()
-        return Response({'success': f'You unliked "{post.title}"'})
+        return Response({'success': 'Post unliked successfully.'})
+
     return Response({'detail': 'You have not liked this post.'}, status=400)
